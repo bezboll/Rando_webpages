@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Joe! 🎂🎉</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --gold:#FFD700;--pink:#FF69B4;--cyan:#00FFFF;
+  --mint:#00FF9F;--orange:#FF6B35;--purple:#C77DFF;
+  --bg:#07000F;
+}
+
+html{scroll-behavior:smooth;}
+body{background:var(--bg);overflow-x:hidden;cursor:none;font-family:'Nunito',sans-serif;}
+
+/* ── CURSOR ────────────────────────────────── */
+#mouse-cursor{
+  position:fixed;width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle,#FFD700,#FF6B35);
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px #FFD700,0 0 30px rgba(255,107,53,.5);
+  transition:width .12s,height .12s;
+}
+#mouse-cursor.big{width:30px;height:30px;}
+
+/* ── STARS ─────────────────────────────────── */
+#stars-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+
+/* ── CONFETTI ──────────────────────────────── */
+#confetti-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:9000;
+}
+
+/* ── FLASH OVERLAY ─────────────────────────── */
+#flash{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#fff;opacity:0;z-index:200;pointer-events:none;
+  transition:opacity .3s;
+}
+
+/* ══════════════════════════════════════════════
+   PHASE 1 – INTRO / TYPEWRITER
+══════════════════════════════════════════════ */
+#intro{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:100;transition:opacity 1.2s ease;
+}
+#intro.out{opacity:0;pointer-events:none;}
+
+#tw-label{
+  font-family:'Space Mono',monospace;
+  color:rgba(255,255,255,.3);font-size:.9rem;
+  letter-spacing:6px;text-transform:uppercase;margin-bottom:24px;
+}
+
+#tw-wrap{
+  font-family:'Space Mono',monospace;
+  font-size:clamp(2.5rem,9vw,5.5rem);
+  color:#FFD700;
+  text-shadow:0 0 30px #FFD700,0 0 60px rgba(255,215,0,.4);
+  display:flex;align-items:center;min-height:1.3em;
+}
+
+#tw-caret{
+  display:inline-block;width:4px;height:1em;
+  background:#FFD700;margin-left:5px;
+  box-shadow:0 0 10px #FFD700;
+  animation:caretBlink .75s steps(1) infinite;
+}
+@keyframes caretBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* "JOE!" mega text */
+#joe-big{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(1);
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(5rem,15vw,9rem);
+  color:#FFD700;white-space:nowrap;
+  text-shadow:0 0 40px #FFD700,0 0 80px rgba(255,215,0,.6),
+              6px 6px 0 #B8860B;
+  z-index:150;opacity:0;pointer-events:none;
+}
+#joe-big.show{opacity:1;}
+#joe-big.exploding{
+  animation:joeBoom .9s cubic-bezier(.175,.885,.32,1.275) forwards;
+}
+@keyframes joeBoom{
+  0%  {transform:translate(-50%,-50%) scale(1);}
+  30% {transform:translate(-50%,-50%) scale(2.5) rotate(-4deg);}
+  60% {transform:translate(-50%,-50%) scale(4) rotate(3deg);}
+  100%{transform:translate(-50%,-50%) scale(30);opacity:0;}
+}
+
+/* ══════════════════════════════════════════════
+   PHASE 2 – BIRTHDAY SCREEN
+══════════════════════════════════════════════ */
+#bday{
+  position:relative;min-height:100vh;opacity:0;
+  transition:opacity 1.8s ease;
+  background:linear-gradient(160deg,#07000F 0%,#140028 40%,#0a001f 70%,#07000F 100%);
+}
+#bday.show{opacity:1;}
+
+/* pulsing radial bg decoration */
+#bday::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 20%,rgba(155,89,182,.12) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 80%,rgba(255,105,180,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%,rgba(0,255,159,.04) 0%,transparent 70%);
+  pointer-events:none;z-index:2;animation:bgPulse 10s ease-in-out infinite;
+}
+@keyframes bgPulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+/* watermark "23" */
+#wm{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(10rem,40vw,28rem);line-height:1;
+  background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,107,53,.07));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;pointer-events:none;user-select:none;z-index:2;
+}
+
+/* ── BALLOONS ──────────────────────────────── */
+#balloons{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:8;
+}
+.bln{
+  position:absolute;bottom:-140px;cursor:pointer;
+  pointer-events:all;animation:blnFloat linear infinite;
+  will-change:transform;
+}
+@keyframes blnFloat{
+  0%  {transform:translateY(0) rotate(0deg);opacity:0;}
+  5%  {opacity:1;}
+  95% {opacity:1;}
+  100%{transform:translateY(calc(-100vh - 200px)) rotate(6deg);opacity:0;}
+}
+.bln-inner{animation:blnSway ease-in-out infinite alternate;}
+@keyframes blnSway{from{transform:rotate(-6deg);}to{transform:rotate(6deg);}}
+.bln-pop{animation:blnPopAnim .3s ease-out forwards!important;}
+@keyframes blnPopAnim{
+  0%{transform:scale(1);}30%{transform:scale(1.6);}100%{transform:scale(0);opacity:0;}
+}
+
+/* ── HERO ──────────────────────────────────── */
+#hero{
+  position:relative;z-index:10;
+  text-align:center;padding:90px 20px 20px;
+}
+#hero-tag{
+  font-family:'Space Mono',monospace;
+  font-size:clamp(.7rem,2vw,1rem);
+  color:rgba(255,255,255,.35);letter-spacing:8px;
+  text-transform:uppercase;margin-bottom:16px;
+}
+#hero-banner{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.4rem,4.5vw,2.6rem);
+  animation:rainbowText 4s linear infinite;
+  letter-spacing:6px;text-transform:uppercase;
+  margin-bottom:8px;
+}
+@keyframes rainbowText{
+  0%  {color:#FF6B6B;text-shadow:0 0 25px #FF6B6B;}
+  17% {color:#FFD700;text-shadow:0 0 25px #FFD700;}
+  34% {color:#00FF9F;text-shadow:0 0 25px #00FF9F;}
+  50% {color:#00FFFF;text-shadow:0 0 25px #00FFFF;}
+  67% {color:#FF69B4;text-shadow:0 0 25px #FF69B4;}
+  84% {color:#C77DFF;text-shadow:0 0 25px #C77DFF;}
+  100%{color:#FF6B6B;text-shadow:0 0 25px #FF6B6B;}
+}
+#hero-name{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(5rem,22vw,14rem);line-height:.9;
+  color:#FFD700;
+  text-shadow:
+    0 0 20px #FFD700,0 0 50px rgba(255,215,0,.6),
+    0 0 100px rgba(255,215,0,.3),
+    5px 5px 0 #A0760B,10px 10px 0 rgba(140,100,0,.4);
+  animation:namePulse 2.5s ease-in-out infinite;
+  margin-bottom:16px;
+}
+@keyframes namePulse{
+  0%,100%{transform:scale(1) rotate(-.5deg);}
+  50%{transform:scale(1.015) rotate(.5deg);}
+}
+#hero-sub{
+  font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:clamp(.85rem,2.2vw,1.2rem);
+  color:rgba(255,255,255,.65);
+  letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;
+}
+#hero-spelled{
+  display:inline-block;
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(1.5rem,4vw,2.5rem);
+  background:linear-gradient(120deg,#FF6B6B,#FFD700,#00FF9F,#00FFFF,#C77DFF,#FF69B4);
+  background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:gradShift 4s linear infinite;
+  letter-spacing:8px;
+}
+@keyframes gradShift{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+
+/* ── DIVIDER ───────────────────────────────── */
+.divider{
+  display:flex;align-items:center;gap:16px;
+  margin:50px auto;max-width:500px;padding:0 20px;position:relative;z-index:10;
+}
+.divider::before,.divider::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,215,0,.4),transparent);
+}
+.div-icon{font-size:1.4rem;animation:divSpin 6s linear infinite;}
+@keyframes divSpin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+
+/* ── MESSAGE ───────────────────────────────── */
+#message{
+  position:relative;z-index:10;
+  max-width:680px;margin:0 auto;padding:0 20px 10px;
+}
+#msg-card{
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,215,0,.18);
+  border-radius:24px;padding:44px 40px;
+  box-shadow:0 0 60px rgba(255,215,0,.06),inset 0 0 40px rgba(255,255,255,.01);
+}
+#msg-card p{
+  font-size:1.08rem;line-height:1.9;
+  color:rgba(255,255,255,.88);margin-bottom:14px;
+}
+#msg-card .sig{
+  font-family:'Fredoka One',cursive;font-size:1.5rem;
+  color:#FF69B4;text-shadow:0 0 20px rgba(255,105,180,.5);
+}
+
+/* ── CAKE SECTION ──────────────────────────── */
+#cake-section{
+  position:relative;z-index:10;
+  text-align:center;padding:0 20px 20px;
+  max-width:720px;margin:0 auto;
+}
+#cake-section h2{
+  font-family:'Fredoka One',cursive;font-size:2.2rem;
+  color:#FF69B4;text-shadow:0 0 25px rgba(255,105,180,.7);
+  margin-bottom:36px;
+}
+
+/* cake */
+#cake{display:inline-block;margin:0 auto 28px;position:relative;}
+
+#candles-row{
+  display:flex;justify-content:center;align-items:flex-end;
+  flex-wrap:wrap;gap:4px;margin-bottom:-4px;
+  max-width:220px;margin-left:auto;margin-right:auto;
+  position:relative;z-index:2;
+}
+
+.candle{
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;position:relative;
+  transition:transform .2s;
+}
+.candle:hover{transform:translateY(-3px);}
+
+.flame{
+  width:11px;height:16px;
+  background:radial-gradient(ellipse 60% 80% at 50% 80%,#fff 0%,#FFD700 35%,#FF6B35 65%,transparent 100%);
+  border-radius:50% 50% 40% 40%/60% 60% 40% 40%;
+  animation:flicker .5s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 5px #FF6B35) drop-shadow(0 0 10px #FFD700);
+  margin-bottom:-2px;
+}
+.flame.out{opacity:0!important;animation:none!important;filter:none!important;}
+.flame.flicker-wild{animation:flickerWild .2s ease-in-out infinite!important;}
+
+@keyframes flicker{
+  0%  {transform:scaleX(.88) scaleY(1.05) rotate(-2deg);}
+  100%{transform:scaleX(1.12) scaleY(.95) rotate(2deg);}
+}
+@keyframes flickerWild{
+  0%  {transform:scaleX(.6) scaleY(1.4) rotate(-10deg);}
+  50% {transform:scaleX(1.4) scaleY(.7) rotate(10deg);}
+  100%{transform:scaleX(.8) scaleY(1.3) rotate(-7deg);}
+}
+
+.cbody{
+  width:9px;height:26px;border-radius:2px 2px 0 0;
+}
+
+/* smoke wisps */
+.smoke-wisp{
+  position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(200,200,200,.5);pointer-events:none;
+  animation:smokeUp 1.8s ease-out forwards;
+}
+@keyframes smokeUp{
+  0%  {transform:translateX(-50%) translateY(0) scale(1);opacity:.6;}
+  100%{transform:translateX(calc(-50% + 10px)) translateY(-50px) scale(4);opacity:0;}
+}
+
+/* tier styles */
+.tier{position:relative;overflow:hidden;}
+#t1{
+  width:210px;height:52px;margin:0 auto;
+  border-radius:8px 8px 0 0;
+  background:linear-gradient(180deg,#FFB6C1,#FF8FAB);
+}
+#t2{
+  width:295px;height:62px;margin:0 auto;
+  background:linear-gradient(180deg,#FFFACD,#FFD700);
+}
+#t3{
+  width:380px;height:72px;margin:0 auto;
+  border-radius:0 0 14px 14px;
+  background:linear-gradient(180deg,#E8BBFF,#C77DFF);
+}
+#plate{
+  width:420px;height:18px;
+  background:linear-gradient(180deg,#f5f5f5,#ccc);
+  border-radius:50%;margin:0 auto;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+}
+
+/* frosting */
+.tier::before{
+  content:'';position:absolute;top:-8px;left:0;right:0;
+  height:20px;pointer-events:none;
+  background:
+    radial-gradient(ellipse 18px 18px at 8% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 17% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 26% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 35% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 44% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 53% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 62% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 71% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 80% 0,white 68%,transparent 68%),
+    radial-gradient(ellipse 18px 18px at 91% 0,white 68%,transparent 68%);
+}
+
+/* tier polka dots */
+.dot{
+  position:absolute;border-radius:50%;opacity:.7;
+}
+
+/* blow button */
+#blow-btn{
+  background:linear-gradient(135deg,#FF6B6B,#FF1493);
+  border:none;border-radius:24px;
+  padding:16px 36px;
+  font-family:'Fredoka One',cursive;font-size:1.55rem;
+  color:#fff;cursor:pointer;
+  box-shadow:0 6px 22px rgba(255,20,147,.45),0 0 50px rgba(255,20,147,.2);
+  transition:transform .2s,box-shadow .2s,font-size .4s,padding .4s;
+  animation:btnPulse 2s ease-in-out infinite;
+  max-width:560px;white-space:normal;line-height:1.35;word-break:break-word;
+}
+#blow-btn:disabled{font-size:1rem;padding:14px 26px;}
+#blow-btn:hover:not(:disabled){
+  transform:scale(1.06);
+  box-shadow:0 8px 32px rgba(255,20,147,.65),0 0 70px rgba(255,20,147,.4);
+}
+#blow-btn:active:not(:disabled){transform:scale(.96);}
+#blow-btn:disabled{opacity:.85;cursor:default;animation:none;}
+@keyframes btnPulse{
+  0%,100%{box-shadow:0 6px 22px rgba(255,20,147,.45),0 0 50px rgba(255,20,147,.2);}
+  50%    {box-shadow:0 6px 22px rgba(255,20,147,.65),0 0 70px rgba(255,20,147,.35);}
+}
+
+#counter{
+  font-family:'Space Mono',monospace;font-size:.88rem;
+  color:rgba(255,255,255,.5);letter-spacing:2px;margin-top:12px;
+}
+
+#wish{
+  font-family:'Fredoka One',cursive;font-size:1.9rem;
+  color:#FFD700;text-shadow:0 0 30px #FFD700;
+  opacity:0;margin-top:22px;
+  animation:none;
+}
+#wish.show{
+  opacity:1;
+  animation:wishPop 1s cubic-bezier(.175,.885,.32,1.275) forwards,wishFloat 2.5s ease-in-out 1s infinite;
+}
+@keyframes wishPop{
+  0%  {transform:scale(.4);opacity:0;}
+  70% {transform:scale(1.25);opacity:1;}
+  100%{transform:scale(1);opacity:1;}
+}
+@keyframes wishFloat{
+  0%,100%{transform:scale(1) translateY(0);}
+  50%    {transform:scale(1.03) translateY(-8px);}
+}
+
+/* ── 2003 SECTION ──────────────────────────── */
+#born{
+  position:relative;z-index:10;
+  text-align:center;padding:0 20px 20px;
+  max-width:720px;margin:0 auto 40px;
+}
+#born h2{
+  font-family:'Fredoka One',cursive;font-size:2rem;
+  color:#00FF9F;text-shadow:0 0 25px rgba(0,255,159,.7);
+  margin-bottom:30px;
+}
+.bgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:14px;
+}
+.bitem{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(0,255,159,.18);
+  border-radius:14px;padding:16px 10px;
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+  cursor:pointer;
+  text-decoration:none;display:block;
+  position:relative;overflow:hidden;
+}
+.bitem::after{
+  content:'🔗';position:absolute;bottom:6px;right:8px;
+  font-size:.7rem;opacity:0;transition:opacity .2s;
+}
+.bitem:hover{
+  transform:translateY(-6px);
+  border-color:rgba(0,255,159,.6);
+  box-shadow:0 8px 24px rgba(0,255,159,.15);
+}
+.bitem:hover::after{opacity:.6;}
+.bitem .bi{font-size:1.9rem;margin-bottom:6px;}
+.bitem .bl{
+  font-family:'Nunito',sans-serif;font-weight:700;
+  font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.4;
+}
+
+/* ── FOOTER ────────────────────────────────── */
+#footer{
+  position:relative;z-index:10;
+  text-align:center;padding:50px 20px 80px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+#footer p{
+  font-family:'Fredoka One',cursive;font-size:1.7rem;
+  color:rgba(255,255,255,.5);
+}
+#footer small{
+  display:block;margin-top:10px;
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  color:rgba(255,255,255,.2);letter-spacing:2px;
+}
+
+/* ── HINTS ─────────────────────────────────── */
+#click-hint{
+  position:fixed;top:18px;right:20px;
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  color:rgba(255,255,255,.25);letter-spacing:1px;
+  z-index:20;opacity:0;transition:opacity 1s;pointer-events:none;
+}
+#click-hint.show{opacity:1;}
+
+#scroll-hint{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:20;opacity:0;transition:opacity 1s;pointer-events:none;
+  animation:scrollBounce 2s ease-in-out infinite;
+}
+#scroll-hint.show{opacity:1;}
+@keyframes scrollBounce{
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%    {transform:translateX(-50%) translateY(8px);}
+}
+#scroll-hint span{
+  font-family:'Space Mono',monospace;font-size:.75rem;
+  color:rgba(255,255,255,.3);letter-spacing:3px;
+}
+
+/* ── WIND ──────────────────────────────────── */
+#wind{
+  position:fixed;top:0;left:-110%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(180,220,255,.07),transparent);
+  z-index:60;pointer-events:none;opacity:0;
+}
+#wind.blowing{animation:windPass .9s ease-out forwards;}
+@keyframes windPass{
+  0%  {left:-110%;opacity:0;}
+  20% {opacity:1;}
+  100%{left:110%;opacity:0;}
+}
+
+/* ── SPARKLE EMOJI ─────────────────────────── */
+.sp{
+  position:fixed;pointer-events:none;z-index:40;font-size:1.1rem;
+  animation:spAnim 1.2s ease-out forwards;
+}
+@keyframes spAnim{
+  0%  {transform:scale(0) rotate(0);opacity:1;}
+  60% {transform:scale(1.6) rotate(200deg);opacity:1;}
+  100%{transform:scale(0) rotate(360deg);opacity:0;}
+}
+
+/* ── FADE-IN-UP ELEMENTS ───────────────────── */
+.fiu{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease;}
+.fiu.vis{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ────────────────────────────── */
+@media(max-width:500px){
+  #t1{width:150px;}#t2{width:215px;}
+  #t3{width:280px;}#plate{width:310px;}
+  .candle{gap:2px;}
+  .cbody{width:7px;height:20px;}
+  .flame{width:9px;height:13px;}
+  #candles-row{max-width:160px;gap:2px;}
+  #msg-card{padding:28px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div id="mouse-cursor"></div>
+<canvas id="stars-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+<div id="flash"></div>
+<div id="wind"></div>
+
+<!-- ════════════════════════════════════════
+     PHASE 1 · TYPEWRITER INTRO
+═════════════════════════════════════════ -->
+<div id="intro">
+  <div id="tw-label">a birthday message for…</div>
+  <div id="tw-wrap">
+    <span id="tw-text"></span><span id="tw-caret"></span>
+  </div>
+</div>
+<div id="joe-big">JOE! 🎉</div>
+
+<!-- ════════════════════════════════════════
+     PHASE 2 · BIRTHDAY PAGE
+═════════════════════════════════════════ -->
+<div id="bday">
+  <div id="wm">23</div>
+  <div id="balloons"></div>
+
+  <!-- HERO -->
+  <div id="hero" class="fiu">
+    <div id="hero-tag">✦ march 6, 2003 ✦</div>
+    <div id="hero-banner">🎉 Happy Birthday 🎉</div>
+    <div id="hero-name">JOE!</div>
+    <div id="hero-sub">Turning 23 &nbsp;·&nbsp; Child of '03 &nbsp;·&nbsp; Legend</div>
+    <div id="hero-spelled">T&nbsp;W&nbsp;E&nbsp;N&nbsp;T&nbsp;Y&nbsp;-&nbsp;T&nbsp;H&nbsp;R&nbsp;E&nbsp;E</div>
+  </div>
+
+  <div class="divider fiu"><span class="div-icon">✨</span></div>
+
+  <!-- MESSAGE -->
+  <div id="message" class="fiu">
+    <div id="msg-card">
+      <p>Hey Joe — happy birthday from your big brother. 🎂</p>
+      <p>23 years ago we showed up to the world <em>together</em>, and every single year since has not been half bad, maybe even partly because you've been in it. You are a great dude, gotta say, and I'm ridiculously lucky to call you my brother — and my twin.</p>
+      <p>Here's to 23 more years of chaos, laughter, and I guess a lot of dumb balloons floating by, great memories, and shared DNA. (K I know it's only as much shared as all our other siblings, but its still cool. one egg, right?) .</p>
+      <p>Now stop reading and go enjoy your birthday. But first — blow out those candles. 👇</p>
+      <div class="sig">— Bez 💕</div>
+    </div>
+  </div>
+
+  <div class="divider fiu"><span class="div-icon">🎂</span></div>
+
+  <!-- CAKE -->
+  <div id="cake-section" class="fiu">
+    <h2>23 Candles · Make a Wish! 🕯️</h2>
+    <div id="cake">
+      <div id="candles-row"></div>
+      <div id="t1" class="tier"></div>
+      <div id="t2" class="tier"></div>
+      <div id="t3" class="tier"></div>
+      <div id="plate"></div>
+    </div>
+    <div>
+      <button id="blow-btn">🌬️ Blow 'em Out!</button>
+    </div>
+    <div id="counter">23 / 23 candles lit 🔥</div>
+    <div id="wish">⭐ Make a Wish, Joe! ⭐</div>
+  </div>
+
+  <div class="divider fiu"><span class="div-icon">🕰️</span></div>
+
+  <!-- 2003 -->
+  <div id="born" class="fiu">
+    <h2>Born into a world where… 🌍</h2>
+    <div class="bgrid">
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">🐠</div><div class="bl">Finding Nemo was in theatres</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">👑</div><div class="bl">"The Return of the King released"</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">🎵</div><div class="bl">"Red dirt Road" by some rando country artist dropped</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">🧙</div><div class="bl">HP Order of the Phoenix came out</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">☠️</div><div class="bl">Pirates of the Caribbean ruled</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">🧬</div><div class="bl">The Human Genome project wrapped</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">😷</div><div class="bl">SARS broke out...</div></a>
+      <a class="bitem" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener"><div class="bi">🤯</div><div class="bl">HUB was already 16!!</div></a>
+    </div>
+  </div>
+
+  <div class="divider fiu"><span class="div-icon">🎊</span></div>
+
+  <!-- FOOTER -->
+  <div id="footer" class="fiu">
+    <p>Happy 23rd, Joe! 🎉🎂🎈</p>
+    <small>click anywhere for confetti · click balloons to pop them · child of '03 forever</small>
+  </div>
+</div>
+
+<div id="click-hint">✨ CLICK ANYWHERE · POP BALLOONS ✨</div>
+<div id="scroll-hint"><span>↓ scroll ↓</span></div>
+
+<script>
+'use strict';
+// ════════════════════════════════════════════
+// CURSOR
+// ════════════════════════════════════════════
+const mc = document.getElementById('mouse-cursor');
+document.addEventListener('mousemove', e => {
+  mc.style.left = e.clientX + 'px';
+  mc.style.top  = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => mc.classList.add('big'));
+document.addEventListener('mouseup',   () => mc.classList.remove('big'));
+
+// ════════════════════════════════════════════
+// STARS
+// ════════════════════════════════════════════
+const SC = document.getElementById('stars-canvas');
+const sx = SC.getContext('2d');
+let stars = [];
+
+function resizeStars(){
+  SC.width = innerWidth; SC.height = innerHeight;
+  SC.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:1;';
+  stars = Array.from({length:220}, () => ({
+    x: Math.random() * SC.width,
+    y: Math.random() * SC.height,
+    r: Math.random() * 2.2 + .4,
+    a: Math.random(),
+    dir: Math.random()>.5?1:-1,
+    spd: Math.random()*.012+.004,
+    c: ['#fff','#FFD700','#ADD8E6','#FFB6C1','#E0E0FF'][0|Math.random()*5]
+  }));
+}
+
+function drawStars(){
+  sx.clearRect(0,0,SC.width,SC.height);
+  stars.forEach(s => {
+    s.a += s.spd * s.dir;
+    if(s.a>=1){s.a=1;s.dir=-1;}
+    if(s.a<=0){s.a=0;s.dir=1;}
+    sx.save();
+    sx.globalAlpha = s.a;
+    sx.fillStyle = s.c;
+    sx.beginPath();
+    sx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sx.fill();
+    if(s.r>1.6){
+      sx.fillRect(s.x-5,s.y-.5,10,1);
+      sx.fillRect(s.x-.5,s.y-5,1,10);
+    }
+    sx.restore();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeStars(); drawStars();
+window.addEventListener('resize', resizeStars);
+
+// ════════════════════════════════════════════
+// CONFETTI ENGINE
+// ════════════════════════════════════════════
+const CC = document.getElementById('confetti-canvas');
+const cx = CC.getContext('2d');
+
+function resizeCC(){CC.width=innerWidth;CC.height=innerHeight;}
+resizeCC();
+window.addEventListener('resize',resizeCC);
+CC.style.cssText='position:fixed;top:0;left:0;pointer-events:none;z-index:9000;';
+
+const COLS=[
+  '#FF6B6B','#FFD700','#00FF9F','#00FFFF','#FF69B4',
+  '#C77DFF','#FF6B35','#4ECDC4','#45B7D1','#FFA07A',
+  '#98FB98','#DDA0DD','#F0E68C','#FF4500','#1E90FF',
+  '#FFB347','#87CEEB','#F8BBD9','#CCFF90','#80DEEA'
+];
+
+let parts = [];
+
+class P{
+  constructor(x,y,opts={}){
+    this.x=x; this.y=y;
+    const sp = opts.speed||12;
+    const ang = opts.angle!==undefined?opts.angle:Math.random()*Math.PI*2;
+    this.vx = Math.cos(ang)*(Math.random()*sp*.8+sp*.4);
+    this.vy = Math.sin(ang)*(Math.random()*sp*.8+sp*.4)-(opts.up?sp*.6:0);
+    this.gravity=.22; this.drag=.987;
+    this.color=opts.color||COLS[0|Math.random()*COLS.length];
+    this.sz=Math.random()*11+3;
+    this.rot=Math.random()*360; this.rs=(Math.random()-.5)*9;
+    this.shape=['rect','circle','strip','star','tri'][0|Math.random()*5];
+    this.life=1; this.decay=Math.random()*.009+.003;
+    this.wb=Math.random()*Math.PI*2; this.ws=Math.random()*.06+.02;
+    this.shimmer=Math.random()>.6;
+  }
+  tick(){
+    this.wb+=this.ws;
+    this.x+=this.vx+Math.sin(this.wb)*.9;
+    this.vy+=this.gravity; this.vx*=this.drag;
+    this.y+=this.vy;
+    this.rot+=this.rs; this.life-=this.decay;
+    return this.life>0&&this.y<CC.height+120;
+  }
+  draw(){
+    cx.save();
+    cx.globalAlpha=Math.max(0,this.life);
+    cx.translate(this.x,this.y);
+    cx.rotate(this.rot*Math.PI/180);
+    cx.fillStyle=this.color;
+    if(this.shimmer){cx.shadowColor=this.color;cx.shadowBlur=5;}
+    switch(this.shape){
+      case'rect':   cx.fillRect(-this.sz/2,-this.sz*.3,this.sz,this.sz*.6);break;
+      case'circle': cx.beginPath();cx.arc(0,0,this.sz/2,0,Math.PI*2);cx.fill();break;
+      case'strip':  cx.fillRect(-this.sz*.15,-this.sz,this.sz*.3,this.sz*2);break;
+      case'tri':
+        cx.beginPath();cx.moveTo(0,-this.sz/2);
+        cx.lineTo(this.sz/2,this.sz/2);cx.lineTo(-this.sz/2,this.sz/2);
+        cx.closePath();cx.fill();break;
+      case'star':
+        let r=-Math.PI/2, step=Math.PI/5;
+        cx.beginPath();
+        for(let i=0;i<10;i++){
+          const ra=i%2===0?this.sz/2:this.sz*.22;
+          cx.lineTo(Math.cos(r)*ra,Math.sin(r)*ra);r+=step;
+        }
+        cx.closePath();cx.fill();break;
+    }
+    cx.restore();
+  }
+}
+
+function burst(x,y,n=60,opts={}){
+  for(let i=0;i<n;i++){
+    const ang=(i/n)*Math.PI*2;
+    parts.push(new P(x,y,{...opts,angle:ang,up:true}));
+  }
+  for(let i=0;i<n*.4;i++)
+    parts.push(new P(x,y,{...opts,speed:(opts.speed||12)*.55}));
+}
+
+function cannon(x,y,ang,n=80,sp=18){
+  for(let i=0;i<n;i++){
+    const a=ang+(Math.random()-.5)*.8;
+    parts.push(new P(x,y,{angle:a,speed:sp+Math.random()*8}));
+  }
+}
+
+let rainTimer=null;
+function startRain(rate=6){
+  if(rainTimer)return;
+  rainTimer=setInterval(()=>{
+    for(let i=0;i<rate;i++)
+      parts.push(new P(Math.random()*CC.width,-8,{
+        angle:Math.PI/2+(Math.random()-.5)*.4,speed:2+Math.random()*3,up:false
+      }));
+  },55);
+}
+function stopRain(){clearInterval(rainTimer);rainTimer=null;}
+
+function renderConfetti(){
+  cx.clearRect(0,0,CC.width,CC.height);
+  parts=parts.filter(p=>{const ok=p.tick();if(ok)p.draw();return ok;});
+  requestAnimationFrame(renderConfetti);
+}
+renderConfetti();
+
+// ════════════════════════════════════════════
+// TYPEWRITER
+// ════════════════════════════════════════════
+const TW   = document.getElementById('tw-text');
+const CARET= document.getElementById('tw-caret');
+const INTRO= document.getElementById('intro');
+const JOEBIG=document.getElementById('joe-big');
+const FLASH = document.getElementById('flash');
+
+const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+
+async function typewriter(){
+  await sleep(900);
+  // type "Josiah christop"
+  for(const ch of 'Josiah christop'){
+    TW.textContent+=ch;
+    await sleep(95+Math.random()*65);
+  }
+  await sleep(920);
+  // backspace to "Jo" (delete "siah christop" = 13 chars)
+  while(TW.textContent.length>2){
+    TW.textContent=TW.textContent.slice(0,-1);
+    await sleep(48+Math.random()*18);
+  }
+  await sleep(680);
+  // type "e" → Joe
+  TW.textContent+='e';
+  await sleep(1300);
+
+  // Hide caret, show JOE!
+  CARET.style.display='none';
+  JOEBIG.classList.add('show');
+  await sleep(600);
+
+  // Pre-explode burst
+  for(let i=0;i<5;i++){
+    burst(CC.width/2+(Math.random()-.5)*200,CC.height/2+(Math.random()-.5)*150,70,{speed:16});
+    await sleep(80);
+  }
+
+  // Grow animation
+  JOEBIG.classList.add('exploding');
+  await sleep(400);
+
+  // White flash + scene swap
+  FLASH.style.opacity='1';
+  await sleep(220);
+  FLASH.style.opacity='0';
+
+  revealBirthday();
+}
+
+// ════════════════════════════════════════════
+// BIRTHDAY REVEAL
+// ════════════════════════════════════════════
+const BDAY       = document.getElementById('bday');
+const CLICK_HINT = document.getElementById('click-hint');
+const SCROLL_HINT= document.getElementById('scroll-hint');
+
+function revealBirthday(){
+  BDAY.style.display='block';
+  // Remove hidden
+  setTimeout(()=>{
+    INTRO.classList.add('out');
+    BDAY.classList.add('show');
+
+    setTimeout(()=>{
+      INTRO.style.display='none';
+
+      // Big opening cannon salvo
+      for(let i=0;i<8;i++){
+        setTimeout(()=>{
+          cannon(0,                CC.height*.75, -Math.PI/5, 90,20);
+          cannon(CC.width,         CC.height*.75, -Math.PI*4/5, 90,20);
+          cannon(CC.width/2,       CC.height,     -Math.PI/2, 100,22);
+          cannon(CC.width*.25,     CC.height,     -Math.PI/2.2,70,18);
+          cannon(CC.width*.75,     CC.height,     -Math.PI/2.2,70,18);
+        },i*280);
+      }
+
+      startRain(10);
+      setTimeout(()=>stopRain(),10000);
+
+      // Hints
+      setTimeout(()=>{CLICK_HINT.classList.add('show');SCROLL_HINT.classList.add('show');},3500);
+
+      // Intersection observer for fade-ins
+      const obs=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+      },{threshold:.1});
+      document.querySelectorAll('.fiu').forEach(el=>obs.observe(el));
+      // Force hero immediately
+      setTimeout(()=>document.getElementById('hero').classList.add('vis'),300);
+
+      startBalloons();
+
+    },1400);
+  },200);
+}
+
+// ════════════════════════════════════════════
+// BALLOONS
+// ════════════════════════════════════════════
+const BLAYER = document.getElementById('balloons');
+const BCOLORS=[
+  '#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7',
+  '#DDA0DD','#F7DC6F','#BB8FCE','#F1948A','#00FF9F',
+  '#FF69B4','#87CEEB','#FFD700','#FF6B35','#98D8C8'
+];
+
+function mkBalloon(){
+  const col=BCOLORS[0|Math.random()*BCOLORS.length];
+  const sc=.65+Math.random()*.7;
+  const dur=9+Math.random()*14;
+  const hi='rgba(255,255,255,.38)';
+  const sLen=35+Math.random()*30;
+
+  const wrap=document.createElement('div');
+  wrap.className='bln';
+  wrap.style.cssText=`left:${Math.random()*(innerWidth-80)}px;bottom:-140px;`+
+    `animation-duration:${dur}s;animation-delay:${Math.random()*6}s;`;
+
+  const inner=document.createElement('div');
+  inner.className='bln-inner';
+  inner.style.animationDuration=`${1.8+Math.random()*2.5}s`;
+  inner.style.animationDelay=`${Math.random()*2}s`;
+
+  const w=60*sc, h=(80+sLen)*sc;
+  inner.innerHTML=`<svg width="${w}" height="${h}" viewBox="0 0 60 ${80+sLen}">
+    <ellipse cx="30" cy="28" rx="25" ry="28" fill="${col}"/>
+    <ellipse cx="20" cy="15" rx="9" ry="7" fill="${hi}"/>
+    <path d="M28,56 Q30,61 32,56 Q30,67 28,56Z" fill="${col}"/>
+    <path d="M30,66 Q${22+Math.random()*16},${66+sLen*.5} 30,${66+sLen}"
+          stroke="rgba(255,255,255,.25)" stroke-width="1" fill="none"/>
+  </svg>`;
+
+  wrap.appendChild(inner);
+
+  wrap.addEventListener('click',e=>{
+    e.stopPropagation();
+    const r=wrap.getBoundingClientRect();
+    popBalloon(wrap,r.left+r.width/2,r.top+r.height/3,col);
+  });
+  return wrap;
+}
+
+function popBalloon(el,cx2,cy2,col){
+  burst(cx2,cy2,28,{speed:7,color:col});
+  for(let i=0;i<16;i++)
+    parts.push(new P(cx2,cy2,{speed:4+Math.random()*7,
+      color:[col,'#FFD700','#fff'][0|Math.random()*3]}));
+  addSpark(cx2,cy2);
+  el.style.animation='blnPopAnim .3s ease-out forwards';
+  el.style.pointerEvents='none';
+  setTimeout(()=>el.remove(),400);
+}
+
+function addSpark(x,y){
+  const s=document.createElement('div');
+  s.className='sp';
+  s.textContent=['✨','⭐','💫','🌟','🎊'][0|Math.random()*5];
+  s.style.left=x+'px'; s.style.top=y+'px';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1300);
+}
+
+function startBalloons(){
+  for(let i=0;i<18;i++)BLAYER.appendChild(mkBalloon());
+  setInterval(()=>{
+    if(BLAYER.children.length<30)BLAYER.appendChild(mkBalloon());
+    // clean up off-screen
+    [...BLAYER.children].forEach(b=>{
+      if(b.getBoundingClientRect().bottom<-160)b.remove();
+    });
+  },2200);
+}
+
+// ════════════════════════════════════════════
+// CAKE DOTS
+// ════════════════════════════════════════════
+function addDots(){
+  const tiers=[
+    {id:'t1',count:6,cols:['#ff69b4','#fff','#c77dff']},
+    {id:'t2',count:10,cols:['#ff6b6b','#4ecdc4','#ffd700']},
+    {id:'t3',count:14,cols:['#ffd700','#00ff9f','#ff69b4','#00ffff']},
+  ];
+  tiers.forEach(({id,count,cols})=>{
+    const el=document.getElementById(id);
+    const w=el.offsetWidth||300, h=el.offsetHeight||60;
+    for(let i=0;i<count;i++){
+      const d=document.createElement('div');
+      d.className='dot';
+      const sz=8+Math.random()*10;
+      d.style.cssText=`width:${sz}px;height:${sz}px;
+        left:${10+Math.random()*(w-sz-20)}px;
+        top:${5+Math.random()*(h-sz-10)}px;
+        background:${cols[0|Math.random()*cols.length]};`;
+      el.appendChild(d);
+    }
+  });
+}
+setTimeout(addDots,50);
+
+// ════════════════════════════════════════════
+// CANDLES
+// ════════════════════════════════════════════
+const CROW   = document.getElementById('candles-row');
+const BLOWBTN= document.getElementById('blow-btn');
+const COUNTER= document.getElementById('counter');
+const WISH   = document.getElementById('wish');
+const WIND   = document.getElementById('wind');
+const CCOLS  = [
+  '#FF6B6B','#FFD700','#4ECDC4','#FF69B4','#98D8C8',
+  '#BB8FCE','#FF6B35','#45B7D1','#00FF9F','#FFA07A',
+  '#DDA0DD','#87CEEB'
+];
+
+let lit=23, wishFired=false;
+
+function mkCandle(i){
+  const col=CCOLS[i%CCOLS.length];
+  const c=document.createElement('div');
+  c.className='candle'; c.dataset.lit='1'; c.dataset.i=i;
+  c.innerHTML=`<div class="flame" data-i="${i}"></div>
+    <div class="cbody" style="background:linear-gradient(90deg,${col}88,${col},${col}88);"></div>`;
+  c.addEventListener('click',e=>{e.stopPropagation();blowCandle(c);});
+  c.addEventListener('mouseenter',()=>{
+    if(c.dataset.lit==='1')c.querySelector('.flame').classList.add('flicker-wild');
+  });
+  c.addEventListener('mouseleave',()=>c.querySelector('.flame').classList.remove('flicker-wild'));
+  CROW.appendChild(c);
+}
+for(let i=0;i<23;i++)mkCandle(i);
+
+function blowCandle(c){
+  if(c.dataset.lit!=='1')return;
+  c.dataset.lit='0';
+  const fl=c.querySelector('.flame');
+  fl.classList.add('out');
+  fl.classList.remove('flicker-wild');
+  // smoke
+  const sm=document.createElement('div');
+  sm.className='smoke-wisp';
+  c.prepend(sm);
+  setTimeout(()=>sm.remove(),1800);
+  lit--;
+  COUNTER.textContent=`${lit} / 23 candles lit 🔥`;
+  if(lit===0&&!wishFired)allOut();
+}
+
+async function blowAll(){
+  WIND.classList.remove('blowing');
+  void WIND.offsetWidth;
+  WIND.classList.add('blowing');
+  const candles=[...CROW.querySelectorAll('.candle')];
+  for(let i=0;i<candles.length;i++){
+    setTimeout(()=>blowCandle(candles[i]),i*75);
+  }
+}
+
+function allOut(){
+  wishFired=true;
+  setTimeout(()=>{
+    WISH.classList.add('show');
+    BLOWBTN.textContent='🎉 K, you know random websites vibe coded by your bro can\'t grant wishes, come on!';
+    BLOWBTN.disabled=true;
+
+    // MASSIVE celebration
+    for(let i=0;i<12;i++){
+      setTimeout(()=>{
+        cannon(0,CC.height*.6,-Math.PI/5,110,22);
+        cannon(CC.width,CC.height*.6,-Math.PI*4/5,110,22);
+        cannon(CC.width/2,CC.height,-Math.PI/2,130,25);
+        burst(Math.random()*CC.width,Math.random()*CC.height*.6,80,{speed:14});
+      },i*220);
+    }
+    startRain(14);
+    setTimeout(()=>stopRain(),14000);
+  },900);
+}
+
+BLOWBTN.addEventListener('click',e=>{e.stopPropagation();blowAll();});
+
+// ════════════════════════════════════════════
+// CLICK-TO-BURST
+// ════════════════════════════════════════════
+document.addEventListener('click',e=>{
+  if(BDAY.classList.contains('show')){
+    burst(e.clientX,e.clientY,45,{speed:11});
+    addSpark(e.clientX,e.clientY);
+  }
+});
+
+window.addEventListener('scroll',()=>{
+  if(scrollY>80)SCROLL_HINT.classList.remove('show');
+},{passive:true});
+
+// Periodic random confetti blasts
+setInterval(()=>{
+  if(BDAY.classList.contains('show')){
+    const x=Math.random()*CC.width;
+    cannon(x,CC.height,-Math.PI/2,35,12);
+  }
+},7000);
+
+// ════════════════════════════════════════════
+// 🚀 LAUNCH
+// ════════════════════════════════════════════
+typewriter();
+</script>
+</body>
+</html>
