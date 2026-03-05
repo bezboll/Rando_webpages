@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Got You!</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#error {
+  display: none;
+  color: #ff4444;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+#error a { color: #aaa; font-size: 12px; word-break: break-all; }
+</style>
+</head>
+<body>
+
+<video id="vid" autoplay controls playsinline>
+  <source src="rickroll.mp4" type="video/mp4">
+</video>
+
+<div id="error">
+  ❌ Video not found.<br>
+  Make sure <code>rickroll.mp4</code> is in the same GitHub folder as this file.<br><br>
+  <a id="debug-path"></a>
+</div>
+
+<script>
+const vid = document.getElementById('vid');
+const err = document.getElementById('error');
+const dbg = document.getElementById('debug-path');
+
+// Show expected path for debugging
+const base = window.location.href.replace('got_you.html', '');
+dbg.textContent = 'Expected video at: ' + base + 'rickroll.mp4';
+dbg.href = base + 'rickroll.mp4';
+
+vid.addEventListener('error', () => {
+  vid.style.display = 'none';
+  err.style.display = 'block';
+});
+
+// Try to play (handle browsers that block autoplay)
+vid.play().catch(() => {
+  // Autoplay blocked — user can press play manually, that's fine
+});
+</script>
+
+</body>
+</html>
