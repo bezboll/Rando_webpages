@@ -880,6 +880,58 @@ window.addEventListener('resize',()=>{
 },{passive:true});
 
 // ══════════════════════
+// TYPING & HORN SOUNDS
+// ══════════════════════
+let _actx=null;
+function getACtx(){if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();return _actx;}
+function playTypeClick(){
+  try{
+    const ac=getACtx(),now=ac.currentTime;
+    const buf=ac.createBuffer(1,Math.floor(ac.sampleRate*.018),ac.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.5);
+    const src=ac.createBufferSource();src.buffer=buf;
+    const g=ac.createGain();g.gain.setValueAtTime(.32,now);g.gain.exponentialRampToValueAtTime(.001,now+.018);
+    const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=3200+Math.random()*800;f.Q.value=1.2;
+    src.connect(f);f.connect(g);g.connect(ac.destination);
+    src.start(now);
+  }catch(e){}
+}
+function playHorns(){
+  try{
+    const ac=getACtx();
+    // da - short low hit at t=0
+    // daaa - longer higher hit with swell at t=0.22, crescendos up
+    const notes=[
+      {t:0,   dur:.28, freq:220, vol:.32, rise:false}, // "da"  - short, low
+      {t:0.30, dur:.9,  freq:277, vol:.65, rise:true },  // "daaa" - longer, higher, swells
+    ];
+    notes.forEach(({t,dur,freq,vol,rise})=>{
+      const now=ac.currentTime+t;
+      const osc=ac.createOscillator();osc.type='sawtooth';
+      osc.frequency.setValueAtTime(freq*.5,now);
+      osc.frequency.linearRampToValueAtTime(freq,now+.04);
+      if(rise) osc.frequency.linearRampToValueAtTime(freq*1.06,now+dur); // slight pitch rise on crescendo
+      const g=ac.createGain();
+      g.gain.setValueAtTime(0,now);
+      g.gain.linearRampToValueAtTime(rise?vol*.4:vol,now+.04); // daaa starts quieter then swells
+      if(rise){g.gain.linearRampToValueAtTime(vol,now+dur*.5);g.gain.linearRampToValueAtTime(vol*1.3,now+dur*.85);}
+      g.gain.exponentialRampToValueAtTime(.001,now+dur+.12);
+      const lfo=ac.createOscillator();lfo.frequency.value=7;
+      const lfoG=ac.createGain();lfoG.gain.value=rise?10:4;
+      lfo.connect(lfoG);lfoG.connect(osc.frequency);
+      const dist=ac.createWaveShaper();
+      const curve=new Float32Array(256);
+      for(let i=0;i<256;i++){const x=i*2/256-1;curve[i]=x*(1.5+Math.abs(x));}
+      dist.curve=curve;
+      osc.connect(dist);dist.connect(g);g.connect(ac.destination);
+      osc.start(now);osc.stop(now+dur+.15);
+      lfo.start(now);lfo.stop(now+dur+.15);
+    });
+  }catch(e){}
+}
+
+// ══════════════════════
 // LOADER
 // ══════════════════════
 const LOADER=document.getElementById('loader'),LOAD_BAR=document.getElementById('load-bar');
@@ -895,11 +947,12 @@ const TW=document.getElementById('tw-text'),CARET=document.getElementById('tw-ca
 const INTRO=document.getElementById('intro'),JOEBIG=document.getElementById('joe-big'),FLASH=document.getElementById('flash');
 async function startTypewriter(){
   INTRO.style.display='flex';await sleep(500);
-  for(const ch of 'Josiah christop'){TW.textContent+=ch;await sleep(95+Math.random()*65);}
-  await sleep(920);while(TW.textContent.length>2){TW.textContent=TW.textContent.slice(0,-1);await sleep(48+Math.random()*18);}
-  await sleep(680);TW.textContent+='e';await sleep(1300);
+  for(const ch of 'Josiah christop'){TW.textContent+=ch;playTypeClick();await sleep(95+Math.random()*65);}
+  await sleep(920);while(TW.textContent.length>2){TW.textContent=TW.textContent.slice(0,-1);playTypeClick();await sleep(48+Math.random()*18);}
+  await sleep(680);TW.textContent+='e';playTypeClick();await sleep(1300);
   CARET.style.display='none';JOEBIG.classList.add('show');await sleep(600);
   for(let i=0;i<5;i++){burst(CC.width/2+(Math.random()-.5)*200,CC.height/2+(Math.random()-.5)*150,70,{speed:16});await sleep(80);}
+  playHorns();
   JOEBIG.classList.add('exploding');await sleep(400);
   FLASH.style.opacity='1';await sleep(220);FLASH.style.opacity='0';
   revealBirthday();
