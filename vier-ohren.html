@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Das Vier-Ohren-Modell</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f0f0f; --surface:#161616; --surface2:#1e1e1e;
+  --border:#2a2a2a; --borderb:#3a3a3a;
+  --text:#e8e4dc; --soft:#999; --muted:#555;
+  --sach:#c8a96e; --sach-bg:rgba(200,169,110,.08);
+  --self:#7eb8d4; --self-bg:rgba(126,184,212,.08);
+  --bez:#8fcf9a;  --bez-bg:rgba(143,207,154,.08);
+  --app:#d4849a;  --app-bg:rgba(212,132,154,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-weight:300;min-height:100vh;}
+
+header{border-bottom:1px solid var(--border);padding:26px 48px;background:var(--surface);display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.header-left h1{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:400;line-height:1.1;}
+.byline{font-family:'IBM Plex Mono',monospace;font-size:.59rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:5px;}
+.cgroup{display:flex;flex-direction:column;gap:5px;}
+.cgroup label{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+select{background:var(--bg);border:1px solid var(--borderb);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:.84rem;font-weight:300;padding:10px 36px 10px 14px;border-radius:4px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;min-width:270px;transition:border-color .2s;}
+select:focus{outline:none;border-color:rgba(200,169,110,.5);}
+select option{background:#161616;}
+
+main{max-width:1260px;margin:0 auto;padding:36px 48px 80px;}
+@media(max-width:740px){header{padding:18px 20px;}main{padding:20px 16px 60px;}select{min-width:180px;}}
+
+.legend{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px;}
+.legend-item{flex:1;padding:11px 15px;border-right:1px solid var(--border);}
+.legend-item:last-child{border-right:none;}
+.leg-name{font-family:'IBM Plex Mono',monospace;font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;display:block;margin-bottom:3px;}
+.leg-desc{font-size:.72rem;color:var(--muted);line-height:1.4;}
+@media(max-width:560px){.legend{flex-direction:column;}.legend-item{border-right:none;border-bottom:1px solid var(--border);}.legend-item:last-child{border-bottom:none;}}
+
+.ctx{display:none;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 22px;margin-bottom:20px;}
+.ctx.show{display:block;animation:fadeUp .3s ease both;}
+.ctx-cat{font-family:'IBM Plex Mono',monospace;font-size:.57rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.ctx-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:400;}
+
+.stmt{display:none;background:var(--surface2);border:1px solid var(--borderb);border-radius:6px;padding:20px 28px;margin-bottom:24px;}
+.stmt.show{display:block;animation:fadeUp .3s ease .08s both;}
+.stmt-from{font-family:'IBM Plex Mono',monospace;font-size:.57rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:flex;align-items:center;gap:8px;}
+.stmt-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:1.12rem;line-height:1.65;color:var(--text);border-left:2px solid var(--borderb);padding-left:16px;}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:680px){.cols{grid-template-columns:1fr;}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--borderb);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.p-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:400;}
+.p-role{font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.p-tag{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:20px;border:1px solid var(--borderb);color:var(--muted);white-space:nowrap;}
+
+.spinner{display:none;padding:28px 20px;align-items:center;gap:10px;}
+.spinner.show{display:flex;}
+.dots{display:flex;gap:5px;}
+.dots span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:dotPulse 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotPulse{0%,80%,100%{transform:scale(.6);opacity:.25;}40%{transform:scale(1);opacity:1;}}
+.spin-label{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.08em;}
+
+.sides{display:none;}
+.sides.show{display:grid;grid-template-columns:1fr 1fr;}
+.side{padding:14px 16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);opacity:0;transform:translateY(5px);transition:opacity .28s ease,transform .28s ease;position:relative;}
+.side.visible{opacity:1;transform:translateY(0);}
+.side:nth-child(2){border-right:none;}
+.side:nth-child(3){border-bottom:none;}
+.side:nth-child(4){border-right:none;border-bottom:none;}
+.s-sach{background:var(--sach-bg);}
+.s-self{background:var(--self-bg);}
+.s-bez {background:var(--bez-bg);}
+.s-app {background:var(--app-bg);}
+.side.dominant{outline:1px solid rgba(255,255,255,.18);outline-offset:-1px;background:rgba(255,255,255,.05)!important;}
+.side.dominant::after{content:'dominantes Ohr';font-family:'IBM Plex Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);position:absolute;top:8px;right:10px;}
+.side-label{font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.13em;text-transform:uppercase;font-weight:500;display:flex;align-items:center;gap:5px;margin-bottom:7px;}
+.s-sach .side-label{color:var(--sach);}
+.s-self .side-label{color:var(--self);}
+.s-bez  .side-label{color:var(--bez);}
+.s-app  .side-label{color:var(--app);}
+.pip{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.s-sach .pip{background:var(--sach);}
+.s-self .pip{background:var(--self);}
+.s-bez  .pip{background:var(--bez);}
+.s-app  .pip{background:var(--app);}
+.side-text{font-size:.8rem;line-height:1.65;color:var(--soft);}
+
+.empty{text-align:center;padding:80px 20px;color:var(--muted);}
+.empty .arrow{font-size:1.8rem;margin-bottom:14px;opacity:.22;}
+.empty p{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Das Vier-Ohren-Modell</h1>
+    <div class="byline">nach Friedemann Schulz von Thun</div>
+  </div>
+  <div class="cgroup">
+    <label for="sz-sel">Szenario wählen</label>
+    <select id="sz-sel"><option value="">— Szenario wählen —</option></select>
+  </div>
+</header>
+
+<main>
+  <div class="legend">
+    <div class="legend-item"><span class="leg-name" style="color:var(--sach)">Sachinformation</span><span class="leg-desc">Worüber wird informiert?</span></div>
+    <div class="legend-item"><span class="leg-name" style="color:var(--self)">Selbstkundgabe</span><span class="leg-desc">Was gibt der Sender von sich preis?</span></div>
+    <div class="legend-item"><span class="leg-name" style="color:var(--bez)">Beziehungshinweis</span><span class="leg-desc">Was hält der Sender vom Empfänger?</span></div>
+    <div class="legend-item"><span class="leg-name" style="color:var(--app)">Appell</span><span class="leg-desc">Was soll der Empfänger tun?</span></div>
+  </div>
+
+  <div class="ctx" id="ctx">
+    <div class="ctx-cat" id="ctx-cat"></div>
+    <div class="ctx-title" id="ctx-title"></div>
+  </div>
+
+  <div class="stmt" id="stmt">
+    <div class="stmt-from" id="stmt-from"></div>
+    <div class="stmt-quote" id="stmt-quote"></div>
+  </div>
+
+  <div class="cols" id="cols"></div>
+
+  <div id="empty" class="empty">
+    <div class="arrow">↑</div>
+    <p>Wählen Sie ein Szenario aus dem Dropdown</p>
+  </div>
+</main>
+
+<script>
+const SIDE_ORDER = ['sach','self','bez','app'];
+const SIDE_CLS   = {sach:'s-sach',self:'s-self',bez:'s-bez',app:'s-app'};
+const SIDE_LABEL = {sach:'Sachinformation',self:'Selbstkundgabe',bez:'Beziehungshinweis',app:'Appell'};
+
+const data = [
+  {
+    titel:"Der Bericht",kategorie:"Arbeit",
+    sender:{name:"Vorgesetzte/r",rolle:"Führungskraft",avatar:"📁"},
+    empfaenger:{name:"Mitarbeiter/in",rolle:"Teammitglied",avatar:"💼"},
+    aussage:"Der Bericht für den Kunden ist noch nicht in meinem Postfach.",
+    sender_schnabel:{sach:"Das Dokument wurde noch nicht digital übermittelt.",self:"Ich stehe unter Zeitdruck und werde nervös.",bez:"Ich muss dich kontrollieren, damit das Projekt läuft.",app:"Schick mir den Bericht jetzt sofort!"},
+    empfaenger_ohren:{sach:"Die E-Mail mit dem Anhang ist noch nicht angekommen.",self:"Der Chef ist heute extrem ungeduldig und gestresst.",bez:"Er hält mich für unzuverlässig oder zu langsam.",app:"Ich muss alles stehen lassen und das Dokument sofort senden."},
+    dominant:"bez"
+  },
+  {
+    titel:"Der Tippfehler",kategorie:"Arbeit",
+    sender:{name:"Kollegin",rolle:"Teammitglied",avatar:"🔍"},
+    empfaenger:{name:"Kollege",rolle:"Präsentator",avatar:"📊"},
+    aussage:"Da ist ein Tippfehler auf der vierten Folie.",
+    sender_schnabel:{sach:"Ein Wort auf Folie 4 ist falsch geschrieben.",self:"Ich habe die Präsentation sehr genau geprüft.",bez:"Ich möchte dich vor einer Blamage bewahren.",app:"Korrigiere den Fehler bitte noch vor dem Meeting."},
+    empfaenger_ohren:{sach:"Es gibt einen kleinen Rechtschreibfehler in der Datei.",self:"Er/Sie will sich als perfektionistischer Experte profilieren.",bez:"Er/Sie sucht gezielt nach meinen Fehlern, um mich zu korrigieren.",app:"Überprüf gefälligst deine ganze Arbeit noch einmal gründlich."},
+    dominant:"bez"
+  },
+  {
+    titel:"Die Lautstärke",kategorie:"Arbeit",
+    sender:{name:"Kollegin",rolle:"Teammitglied",avatar:"🤫"},
+    empfaenger:{name:"Kollege",rolle:"Telefonierend",avatar:"📞"},
+    aussage:"Dein Telefonat ist im ganzen Büro zu hören.",
+    sender_schnabel:{sach:"Die Lautstärke des Gesprächs ist akustisch deutlich wahrnehmbar.",self:"Ich kann mich bei diesem Geräuschpegel nicht konzentrieren.",bez:"Du nimmst gerade keine Rücksicht auf meine Arbeitsweise.",app:"Telefoniere bitte leiser oder wechsle in einen anderen Raum."},
+    empfaenger_ohren:{sach:"Ich bin gerade mitten in einem Telefonat.",self:"Er/Sie ist heute besonders lärmempfindlich und dünnhäutig.",bez:"Er/Sie möchte mich kontrollieren und mein Verhalten einschränken.",app:"Ich soll sofort auflegen oder das Büro verlassen."},
+    dominant:"bez"
+  },
+  {
+    titel:"Die Literatur",kategorie:"Studium",
+    sender:{name:"Kommilitone",rolle:"Lerngruppe",avatar:"📚"},
+    empfaenger:{name:"Kommilitonin",rolle:"Lerngruppe",avatar:"😬"},
+    aussage:"Hast du den Text für das Seminar schon gelesen?",
+    sender_schnabel:{sach:"Es geht um die Vorbereitung der vorgegebenen Pflichtlektüre.",self:"Ich bin gut vorbereitet und möchte mich austauschen.",bez:"Wir müssen als Team funktionieren, um das Seminar zu bestehen.",app:"Lies den Text endlich, damit wir mit der Arbeit starten können."},
+    empfaenger_ohren:{sach:"Es existiert ein relevanter Text für diese Lehrveranstaltung.",self:"Er/Sie ist mal wieder ein überambitionierter Streber.",bez:"Er/Sie glaubt, dass ich faul oder unvorbereitet bin.",app:"Ich muss jetzt sofort mit dem Lesen anfangen und Zeit investieren."},
+    dominant:"bez"
+  },
+  {
+    titel:"Das Tempo",kategorie:"Studium",
+    sender:{name:"Zuhörer/in",rolle:"Publikum",avatar:"🙋"},
+    empfaenger:{name:"Präsentator/in",rolle:"Vortragende/r",avatar:"🎤"},
+    aussage:"Du sprichst gerade ziemlich schnell.",
+    sender_schnabel:{sach:"Die Sprechgeschwindigkeit liegt über dem Durchschnitt.",self:"Ich kann den inhaltlichen Ausführungen nicht mehr folgen.",bez:"Ich möchte, dass dein Vortrag gut verständlich ankommt.",app:"Drossle bitte dein Tempo und mach öfter Pausen."},
+    empfaenger_ohren:{sach:"Ich habe ein hohes Sprechtempo bei meiner Präsentation.",self:"Er/Sie hört mir nicht aufmerksam genug zu.",bez:"Er/Sie kritisiert grundlegend meinen persönlichen Präsentationsstil.",app:"Ich muss meinen Vortrag kürzen oder Folien überspringen."},
+    dominant:"bez"
+  },
+  {
+    titel:"Die Klausur",kategorie:"Studium",
+    sender:{name:"Student/in A",rolle:"Kommilitone/in",avatar:"😰"},
+    empfaenger:{name:"Student/in B",rolle:"Kommilitone/in",avatar:"🤔"},
+    aussage:"Ich habe noch kein Wort für die Prüfung am Montag gelernt.",
+    sender_schnabel:{sach:"Mein aktueller Lernfortschritt beträgt null Prozent.",self:"Ich habe große Angst und fühle mich völlig überfordert.",bez:"Ich vertraue dir mein Scheitern und meine Schwäche an.",app:"Bitte sag mir, dass du auch noch nicht weit bist."},
+    empfaenger_ohren:{sach:"Die Vorbereitung auf die Klausur hat noch nicht begonnen.",self:"Er/Sie ist einfach unorganisiert und fängt zu spät an.",bez:"Er/Sie will sich wahrscheinlich meine Zusammenfassungen leihen.",app:"Wir müssen das gesamte Wochenende zusammen lernen."},
+    dominant:"self"
+  }
+];
+
+const sel = document.getElementById('sz-sel');
+
+data.forEach(function(s, i) {
+  const o = document.createElement('option');
+  o.value = i;
+  o.textContent = s.kategorie + '  ·  ' + s.titel;
+  sel.appendChild(o);
+});
+
+sel.addEventListener('change', function() {
+  if (sel.value !== '') run(parseInt(sel.value));
+});
+
+function run(idx) {
+  const s = data[idx];
+
+  document.getElementById('ctx-cat').textContent  = s.kategorie;
+  document.getElementById('ctx-title').textContent = s.titel;
+  document.getElementById('ctx').classList.add('show');
+
+  document.getElementById('stmt-from').innerHTML =
+    '<span style="font-size:1rem">' + s.sender.avatar + '</span>&nbsp;' + s.sender.name + ' sagt:';
+  document.getElementById('stmt-quote').textContent = s.aussage;
+  document.getElementById('stmt').classList.add('show');
+
+  document.getElementById('empty').style.display = 'none';
+
+  const cols = document.getElementById('cols');
+  cols.innerHTML = '';
+
+  const people = [
+    {person:s.sender,     tag:'Sender:in',     data:s.sender_schnabel,  dominant:null,       spinText:'Kodierung analysieren\u2026'},
+    {person:s.empfaenger, tag:'Empf\u00e4nger:in', data:s.empfaenger_ohren, dominant:s.dominant, spinText:'Dekodierung analysieren\u2026'}
+  ];
+
+  people.forEach(function(p, pi) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let sidesHTML = '';
+    SIDE_ORDER.forEach(function(key) {
+      const dom = p.dominant === key;
+      sidesHTML +=
+        '<div class="side ' + SIDE_CLS[key] + (dom ? ' dominant' : '') + '">' +
+          '<div class="side-label"><div class="pip"></div>' + SIDE_LABEL[key] + '</div>' +
+          '<div class="side-text">' + p.data[key] + '</div>' +
+        '</div>';
+    });
+
+    card.innerHTML =
+      '<div class="card-header">' +
+        '<div class="avatar">' + p.person.avatar + '</div>' +
+        '<div>' +
+          '<div class="p-name">' + p.person.name + '</div>' +
+          '<div class="p-role">' + p.person.rolle + '</div>' +
+        '</div>' +
+        '<div class="p-tag">' + p.tag + '</div>' +
+      '</div>' +
+      '<div class="spinner" id="sp' + pi + '">' +
+        '<div class="dots"><span></span><span></span><span></span></div>' +
+        '<div class="spin-label">' + p.spinText + '</div>' +
+      '</div>' +
+      '<div class="sides" id="sd' + pi + '">' + sidesHTML + '</div>';
+
+    cols.appendChild(card);
+  });
+
+  people.forEach(function(_, pi) {
+    const base = pi * 1000;
+    const spin = 1500 + Math.random() * 500;
+    setTimeout(function() {
+      document.getElementById('sp' + pi).classList.add('show');
+    }, base);
+    setTimeout(function() {
+      document.getElementById('sp' + pi).classList.remove('show');
+      const sd = document.getElementById('sd' + pi);
+      sd.classList.add('show');
+      sd.querySelectorAll('.side').forEach(function(el, si) {
+        setTimeout(function() { el.classList.add('visible'); }, si * 160);
+      });
+    }, base + spin);
+  });
+}
+</script>
+</body>
+</html>
