@@ -136,6 +136,13 @@
       display: inline-block;
       filter: drop-shadow(0 0 20px rgba(0,200,255,0.7));
       margin-top: 20px;
+      cursor: none;
+      transition: all 0.3s ease;
+    }
+
+    .disco:hover {
+      transform: scale(1.3) rotate(15deg);
+      filter: drop-shadow(0 0 40px var(--sky-blue)) drop-shadow(0 0 20px var(--purple));
     }
 
     .balloons {
@@ -153,19 +160,6 @@
       animation: riseUp linear infinite;
       opacity: 0.8;
     }
-/* Add this to your existing <style> section */
-.disco-link {
-  text-decoration: none;
-  cursor: none; /* Keeps your custom cursor in control */
-  transition: all 0.3s ease;
-  display: inline-block;
-  z-index: 10;
-}
-
-.disco-link:hover .disco {
-  transform: scale(1.3) rotate(15deg);
-  filter: drop-shadow(0 0 40px var(--sky-blue)) drop-shadow(0 0 20px var(--purple));
-}
 
     /* Keyframes */
     @keyframes floatIn {
@@ -239,88 +233,96 @@
 
     <p class="message">
       To the absolute legend. I really wish you Alles Gute and Herzlichen Gluckwunch, and it's sad you are gone, but I'm glad you can be there, and all those good things. Hopefully your 23rd year is epic, and yeah, all the best I guess...
-     
     </p>
 
-    <a href="got_you.html" target="_blank" rel="noopener noreferrer" class="disco-link">
-  <div class="disco">🪩</div>
-</a>
+    <div class="disco" onclick="openRickRoll()">🪩</div>
   </div>
 
   <script>
     // 1. Custom Cursor Movement
-const cursor = document.querySelector('.cursor');
-document.addEventListener('mousemove', (e) => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-});
+    const cursor = document.querySelector('.cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
 
-// 2. The "Rain" Feature (Click for Cake & Confetti)
-const partyEmojis = ['🎂', '🍰', '🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️', '🎊', '🎉', '✨', '🧁'];
+    // 2. The "Rain" Feature (Click for Cake & Confetti)
+    const partyEmojis = ['🎂', '🍰', '🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️', '🎊', '🎉', '✨', '🧁'];
 
-document.addEventListener('click', (e) => {
-  // Create 15 items per click for a "burst" effect
-  for (let i = 0; i < 15; i++) {
-    createRainItem(e.clientX, e.clientY);
-  }
-});
+    document.addEventListener('click', (e) => {
+      for (let i = 0; i < 15; i++) {
+        createRainItem(e.clientX, e.clientY);
+      }
+    });
 
-function createRainItem(x, y) {
-  const item = document.createElement('div');
-  item.className = 'star'; // Reusing star class for positioning
-  item.style.position = 'fixed';
-  item.style.left = x + 'px';
-  item.style.top = y + 'px';
-  item.style.zIndex = '100';
-  item.style.pointerEvents = 'none';
-  item.style.fontSize = (Math.random() * 20 + 20) + 'px';
-  item.innerText = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
-  
-  document.body.appendChild(item);
+    function createRainItem(x, y) {
+      const item = document.createElement('div');
+      item.className = 'star'; 
+      item.style.position = 'fixed';
+      item.style.left = x + 'px';
+      item.style.top = y + 'px';
+      item.style.zIndex = '100';
+      item.style.pointerEvents = 'none';
+      item.style.fontSize = (Math.random() * 20 + 20) + 'px';
+      item.innerText = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
+      
+      document.body.appendChild(item);
 
-  // Randomize the horizontal "toss" and falling speed
-  const destinationX = (Math.random() - 0.5) * 400; // Slants left or right
-  const duration = Math.random() * 2 + 1; // 1 to 3 seconds
+      const destinationX = (Math.random() - 0.5) * 400; 
+      const duration = Math.random() * 2 + 1; 
 
-  const animation = item.animate([
-    { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
-    { transform: `translate(${destinationX}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
-  ], {
-    duration: duration * 10000,
-    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-  });
+      const animation = item.animate([
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${destinationX}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], {
+        duration: duration * 5000,
+        easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      });
 
-  animation.onfinish = () => item.remove();
-}
+      animation.onfinish = () => item.remove();
+    }
 
-// 3. Background Balloon Generator (Kept from before)
-const balloonContainer = document.getElementById('balloon-container');
-const balloonEmojis = ['🎈', '🎉', '✨', '🎁', '💖'];
+    // 3. Popup Logic
+    function openRickRoll() {
+      const width = 640;
+      const height = 480;
+      const left = (window.screen.width / 2) - (width / 2);
+      const top = (window.screen.height / 2) - (height / 2);
+      
+      window.open(
+        'got_you.html', 
+        'CelebrationPopup', 
+        `width=${width},height=${height},top=${top},left=${left},resizable=no,status=no`
+      );
+    }
 
-function createBalloon() {
-  const b = document.createElement('div');
-  b.className = 'balloon';
-  b.innerText = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
-  b.style.left = Math.random() * 100 + 'vw';
-  b.style.animationDuration = (Math.random() * 3 + 4) + 's';
-  balloonContainer.appendChild(b);
-  setTimeout(() => b.remove(), 7000);
-}
-setInterval(createBalloon, 800);
+    // 4. Background Elements (Balloons & Stars)
+    const balloonContainer = document.getElementById('balloon-container');
+    const balloonEmojis = ['🎈', '🎉', '✨', '🎁', '💖'];
 
-// 4. Background Star Twinkle (Kept from before)
-function createStar() {
-  const star = document.createElement('div');
-  star.className = 'star';
-  star.innerHTML = '✦';
-  star.style.left = Math.random() * 100 + 'vw';
-  star.style.top = Math.random() * 100 + 'vh';
-  star.style.fontSize = (Math.random() * 10 + 10) + 'px';
-  star.style.animationDelay = Math.random() * 2 + 's';
-  document.body.appendChild(star);
-  setTimeout(() => star.remove(), 2000);
-}
-setInterval(createStar, 200);
+    function createBalloon() {
+      const b = document.createElement('div');
+      b.className = 'balloon';
+      b.innerText = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+      b.style.left = Math.random() * 100 + 'vw';
+      b.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      balloonContainer.appendChild(b);
+      setTimeout(() => b.remove(), 7000);
+    }
+    setInterval(createBalloon, 800);
+
+    function createStar() {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.innerHTML = '✦';
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 100 + 'vh';
+      star.style.fontSize = (Math.random() * 10 + 10) + 'px';
+      star.style.animationDelay = Math.random() * 2 + 's';
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 2000);
+    }
+    setInterval(createStar, 200);
   </script>
 </body>
 </html>
