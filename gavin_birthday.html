@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAVIN IS 22!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Lilita+One&family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hot-pink: #FF2D78;
+      --electric-yellow: #FFE500;
+      --neon-green: #39FF14;
+      --sky-blue: #00C8FF;
+      --orange: #FF7A00;
+      --purple: #BF00FF;
+      --white: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: #0a0a1a;
+      font-family: 'Fredoka One', cursive;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--electric-yellow);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+      transition: transform 0.1s;
+    }
+
+    .bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .tagline {
+      font-family: 'Boogaloo', cursive;
+      font-size: clamp(1.2rem, 4vw, 2.2rem);
+      letter-spacing: 0.4em;
+      color: var(--sky-blue);
+      text-transform: uppercase;
+      animation: floatIn 0.8s ease both;
+      text-shadow: 0 0 20px var(--sky-blue), 0 0 40px var(--sky-blue);
+    }
+
+    .name {
+      font-family: 'Lilita One', cursive;
+      font-size: clamp(5rem, 22vw, 15rem);
+      line-height: 0.9;
+      background: linear-gradient(135deg, var(--hot-pink) 0%, var(--electric-yellow) 40%, var(--neon-green) 70%, var(--sky-blue) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 300% 300%;
+      animation: gradientShift 3s ease-in-out infinite alternate, floatIn 0.9s 0.2s ease both;
+      filter: drop-shadow(0 0 30px rgba(255, 45, 120, 0.5));
+    }
+
+    .age-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      animation: floatIn 1s 0.4s ease both;
+    }
+
+    .age {
+      font-family: 'Lilita One', cursive;
+      font-size: clamp(4rem, 18vw, 12rem);
+      color: var(--electric-yellow);
+      line-height: 1;
+      animation: pulse 2s ease-in-out infinite, ringPop 1.5s infinite;
+    }
+
+    .candles {
+      font-size: clamp(2rem, 6vw, 4rem);
+      animation: wiggle 1s ease-in-out infinite;
+    }
+
+    .subtitle {
+      font-family: 'Boogaloo', cursive;
+      font-size: clamp(1rem, 3.5vw, 1.8rem);
+      color: var(--white);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      animation: floatIn 1s 0.6s ease both;
+    }
+
+    .emoji-banner {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      animation: floatIn 1s 0.8s ease both, marqueeFloat 4s ease-in-out infinite;
+      letter-spacing: 8px;
+      margin: 10px 0;
+    }
+
+    .message {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--neon-green);
+      max-width: 600px;
+      line-height: 1.6;
+      text-shadow: 0 0 15px rgba(57,255,20,0.5);
+      animation: floatIn 1s 1s ease both;
+    }
+
+    .disco {
+      font-size: clamp(3rem, 8vw, 6rem);
+      animation: spin 3s linear infinite, floatIn 0.8s ease both;
+      display: inline-block;
+      filter: drop-shadow(0 0 20px rgba(0,200,255,0.7));
+      margin-top: 20px;
+    }
+
+    .balloons {
+      position: fixed;
+      width: 100%; height: 100%;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .balloon {
+      position: absolute;
+      bottom: -100px;
+      font-size: 2.5rem;
+      animation: riseUp linear infinite;
+      opacity: 0.8;
+    }
+/* Add this to your existing <style> section */
+.disco-link {
+  text-decoration: none;
+  cursor: none; /* Keeps your custom cursor in control */
+  transition: all 0.3s ease;
+  display: inline-block;
+  z-index: 10;
+}
+
+.disco-link:hover .disco {
+  transform: scale(1.3) rotate(15deg);
+  filter: drop-shadow(0 0 40px var(--sky-blue)) drop-shadow(0 0 20px var(--purple));
+}
+
+    /* Keyframes */
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.05); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-10deg); }
+      50%       { transform: rotate(10deg); }
+    }
+    @keyframes marqueeFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes riseUp {
+      0%   { transform: translateY(0) translateX(0); opacity: 0.9; }
+      50%  { transform: translateY(-50vh) translateX(20px); opacity: 0.7; }
+      100% { transform: translateY(-110vh) translateX(-10px); opacity: 0; }
+    }
+    @keyframes ringPop {
+      0%, 100% { text-shadow: 4px 4px 0 var(--orange), 0 0 40px var(--electric-yellow); }
+      50%      { text-shadow: 0 0 60px var(--hot-pink), 0 0 100px var(--purple); }
+    }
+    @keyframes starBlink {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50%      { opacity: 1; transform: scale(1.2); }
+    }
+
+    .star {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+      color: white;
+      animation: starBlink 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor"></div>
+  <div class="bg-canvas" id="canvas"></div>
+  <div class="balloons" id="balloon-container"></div>
+
+  <div class="container">
+    <p class="tagline">Happy Birthday</p>
+    <h1 class="name">GAVIN</h1>
+    
+    <div class="age-row">
+      <span class="candles">🎂</span>
+      <span class="age">22</span>
+      <span class="candles">🎂</span>
+    </div>
+
+    <p class="subtitle">Level 22 Unlocked</p>
+    
+    <div class="emoji-banner">
+      ⚡️ 🎈 🕺 🍕 🎸 🍻 ⚡️
+    </div>
+
+    <p class="message">
+      To the absolute legend. I really wish you Alles Gute and Herzlichen Gluckwunch, and it's sad you are gone, but I'm glad you can be there, and all those good things. Hopefully your 23rd year is epic, and yeah, all the best I guess...
+     
+    </p>
+
+    <a href="got_you.html" class="disco-link">
+  <div class="disco">🪩</div>
+</a>
+  </div>
+
+  <script>
+    // 1. Custom Cursor Movement
+const cursor = document.querySelector('.cursor');
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+
+// 2. The "Rain" Feature (Click for Cake & Confetti)
+const partyEmojis = ['🎂', '🍰', '🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️', '🎊', '🎉', '✨', '🧁'];
+
+document.addEventListener('click', (e) => {
+  // Create 15 items per click for a "burst" effect
+  for (let i = 0; i < 15; i++) {
+    createRainItem(e.clientX, e.clientY);
+  }
+});
+
+function createRainItem(x, y) {
+  const item = document.createElement('div');
+  item.className = 'star'; // Reusing star class for positioning
+  item.style.position = 'fixed';
+  item.style.left = x + 'px';
+  item.style.top = y + 'px';
+  item.style.zIndex = '100';
+  item.style.pointerEvents = 'none';
+  item.style.fontSize = (Math.random() * 20 + 20) + 'px';
+  item.innerText = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
+  
+  document.body.appendChild(item);
+
+  // Randomize the horizontal "toss" and falling speed
+  const destinationX = (Math.random() - 0.5) * 400; // Slants left or right
+  const duration = Math.random() * 2 + 1; // 1 to 3 seconds
+
+  const animation = item.animate([
+    { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+    { transform: `translate(${destinationX}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+  ], {
+    duration: duration * 10000,
+    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+  });
+
+  animation.onfinish = () => item.remove();
+}
+
+// 3. Background Balloon Generator (Kept from before)
+const balloonContainer = document.getElementById('balloon-container');
+const balloonEmojis = ['🎈', '🎉', '✨', '🎁', '💖'];
+
+function createBalloon() {
+  const b = document.createElement('div');
+  b.className = 'balloon';
+  b.innerText = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+  b.style.left = Math.random() * 100 + 'vw';
+  b.style.animationDuration = (Math.random() * 3 + 4) + 's';
+  balloonContainer.appendChild(b);
+  setTimeout(() => b.remove(), 7000);
+}
+setInterval(createBalloon, 800);
+
+// 4. Background Star Twinkle (Kept from before)
+function createStar() {
+  const star = document.createElement('div');
+  star.className = 'star';
+  star.innerHTML = '✦';
+  star.style.left = Math.random() * 100 + 'vw';
+  star.style.top = Math.random() * 100 + 'vh';
+  star.style.fontSize = (Math.random() * 10 + 10) + 'px';
+  star.style.animationDelay = Math.random() * 2 + 's';
+  document.body.appendChild(star);
+  setTimeout(() => star.remove(), 2000);
+}
+setInterval(createStar, 200);
+  </script>
+</body>
+</html>
