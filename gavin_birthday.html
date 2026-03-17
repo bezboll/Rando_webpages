@@ -70,9 +70,18 @@
       text-shadow: 0 0 20px var(--sky-blue), 0 0 40px var(--sky-blue);
     }
 
+    /* Name Wrapper for Twin Mode */
+    .name-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
     .name {
       font-family: 'Lilita One', cursive;
-      font-size: clamp(5rem, 22vw, 15rem);
+      font-size: clamp(4rem, 15vw, 10rem); 
       line-height: 0.9;
       background: linear-gradient(135deg, var(--hot-pink) 0%, var(--electric-yellow) 40%, var(--neon-green) 70%, var(--sky-blue) 100%);
       -webkit-background-clip: text;
@@ -81,6 +90,21 @@
       background-size: 300% 300%;
       animation: gradientShift 3s ease-in-out infinite alternate, floatIn 0.9s 0.2s ease both;
       filter: drop-shadow(0 0 30px rgba(255, 45, 120, 0.5));
+    }
+
+    #jocelyne-name {
+      display: none;
+      filter: drop-shadow(0 0 30px var(--purple));
+    }
+
+    .jocelyne-active {
+      display: block !important;
+      animation: zoomInRight 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes zoomInRight {
+      from { transform: translateX(100vw) scale(0); opacity: 0; }
+      to { transform: translateX(0) scale(1); opacity: 1; }
     }
 
     .age-row {
@@ -128,6 +152,27 @@
       line-height: 1.6;
       text-shadow: 0 0 15px rgba(57,255,20,0.5);
       animation: floatIn 1s 1s ease both;
+      transition: all 0.5s ease;
+    }
+
+    .twin-btn {
+      background: var(--purple);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-family: 'Fredoka One', cursive;
+      border-radius: 50px;
+      margin: 15px 0;
+      box-shadow: 0 0 20px var(--purple);
+      animation: floatIn 1s 1.2s ease both;
+      transition: all 0.3s ease;
+      cursor: none;
+    }
+
+    .twin-btn:hover {
+      transform: scale(1.1);
+      background: var(--hot-pink);
+      box-shadow: 0 0 30px var(--hot-pink);
     }
 
     .disco {
@@ -216,8 +261,12 @@
   <div class="balloons" id="balloon-container"></div>
 
   <div class="container">
-    <p class="tagline">Happy Birthday</p>
-    <h1 class="name">GAVIN</h1>
+    <p class="tagline" id="main-tagline">Happy Birthday</p>
+    
+    <div class="name-container">
+      <h1 class="name">GAVIN</h1>
+      <h1 class="name" id="jocelyne-name">& JOCELYN</h1>
+    </div>
     
     <div class="age-row">
       <span class="candles">🎂</span>
@@ -231,24 +280,23 @@
       ⚡️ 🎈 🕺 🍕 🎸 🍻 ⚡️
     </div>
 
-    <p class="message">
+    <p class="message" id="message-text">
       To the absolute legend. I really wish you Alles Gute and Herzlichen Gluckwunch, and it's sad you are gone, but I'm glad you can be there, and all those good things. Hopefully your 23rd year is epic, and yeah, all the best I guess...
     </p>
+
+    <button class="twin-btn" id="twin-btn" onclick="triggerTwinMode()">Wait... there's two of you?</button>
 
     <div class="disco" onclick="openRickRoll()">🪩</div>
   </div>
 
   <script>
-    // 1. Custom Cursor Movement
     const cursor = document.querySelector('.cursor');
     document.addEventListener('mousemove', (e) => {
       cursor.style.left = e.clientX + 'px';
       cursor.style.top = e.clientY + 'px';
     });
 
-    // 2. The "Rain" Feature (Click for Cake & Confetti)
     const partyEmojis = ['🎂', '🍰', '🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️🕯️', '🎊', '🎉', '✨', '🧁'];
-
     document.addEventListener('click', (e) => {
       for (let i = 0; i < 15; i++) {
         createRainItem(e.clientX, e.clientY);
@@ -265,7 +313,6 @@
       item.style.pointerEvents = 'none';
       item.style.fontSize = (Math.random() * 20 + 20) + 'px';
       item.innerText = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
-      
       document.body.appendChild(item);
 
       const destinationX = (Math.random() - 0.5) * 400; 
@@ -282,24 +329,47 @@
       animation.onfinish = () => item.remove();
     }
 
-    // 3. Popup Logic
+    function triggerTwinMode() {
+      const msg = document.getElementById('message-text');
+      const btn = document.getElementById('twin-btn');
+      const jocelyne = document.getElementById('jocelyne-name');
+      const tagline = document.getElementById('main-tagline');
+
+      // 1. Fade out the old message
+      msg.style.opacity = '0';
+      btn.style.display = 'none';
+
+      setTimeout(() => {
+        // 2. Change the text content while it's invisible
+        tagline.innerText = "Double Trouble!";
+        msg.innerText = "Yo, Happy Birthday you guys, Gavin and Jocelyn, hope 22 is the best year yet, although this last one wasn't half bad. Wasn't that epic Kanjam game this last year? Either way, we should do a rematch once. Anyways, you guys are literally the best, hit the disco ball, and have a great birthday!!!";
+        
+        // 3. Zoom in Jocelyne's name
+        jocelyne.classList.add('jocelyne-active');
+
+        // 4. Fade the new message back in
+        msg.style.opacity = '1';
+        msg.style.color = 'var(--hot-pink)'; // Optional: Change color for the new mode
+
+        // 5. BIG EXPLOSION
+        for (let i = 0; i < 80; i++) {
+          setTimeout(() => {
+            createRainItem(window.innerWidth / 2 + (Math.random() - 0.5) * 400, window.innerHeight / 2);
+          }, i * 5);
+        }
+      }, 500); // Wait for fade-out to finish before swapping
+    }
+
     function openRickRoll() {
       const width = 640;
       const height = 480;
       const left = (window.screen.width / 2) - (width / 2);
       const top = (window.screen.height / 2) - (height / 2);
-      
-      window.open(
-        'got_you.html', 
-        'CelebrationPopup', 
-        `width=${width},height=${height},top=${top},left=${left},resizable=no,status=no`
-      );
+      window.open('got_you.html', 'CelebrationPopup', `width=${width},height=${height},top=${top},left=${left},resizable=no,status=no`);
     }
 
-    // 4. Background Elements (Balloons & Stars)
     const balloonContainer = document.getElementById('balloon-container');
     const balloonEmojis = ['🎈', '🎉', '✨', '🎁', '💖'];
-
     function createBalloon() {
       const b = document.createElement('div');
       b.className = 'balloon';
